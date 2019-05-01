@@ -10,7 +10,14 @@ function SequraPayments({
 }) {
   const checkDOMErrors = () => {
     if (!addonScope.querySelector(container)) {
-      throw new DOMException('No se ha podido encontrar el contenedor');
+      throw new DOMException('No se ha podido encontrar o no se ha declarado el container');
+    }
+    const newContainer = addonScope.querySelector(container);
+    if (!newContainer.querySelector(priceId)) {
+      throw new DOMException('No se ha podido encontrar o no se ha declarado el priceId');
+    }
+    if (!newContainer.querySelector(sequraAddonContainer)) {
+      throw new DOMException('No se ha podido encontrar o no se ha declarado el sequraAddonContainer');
     }
   };
   const getPrice = (priceContainer) => {
@@ -65,7 +72,7 @@ function SequraPayments({
     modifiedContainer.innerHTML = initialHtml;
     const sequraSelect = modifiedContainer.children[0].children[1];
     const agreements = await CreditCalls.getCreditAgreement(this.productPrice);
-    if (agreements.lenght) {
+    if (agreements.length) {
       agreements.forEach(({
         // eslint-disable-next-line camelcase
         instalment_count,
@@ -76,7 +83,7 @@ function SequraPayments({
         option.innerHTML = `${instalment_count} cuotas de ${string}/mes`;
         sequraSelect.appendChild(option);
       });
-      const moreInfoButton = sequraAddonContainer.children[0].children[0].children[1];
+      const moreInfoButton = modifiedContainer.children[0].children[0].children[1];
       moreInfoButton.addEventListener('click', () => {
         openMoreInfoModal(agreements, sequraSelect);
       });

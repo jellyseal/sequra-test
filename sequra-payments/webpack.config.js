@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   entry: './src/index.js',
   output: {
-    library: 'sequraPayments',
+    library: 'SequraPayments',
     libraryTarget: 'umd',
     filename: 'main.js',
     auxiliaryComment: 'UMD library',

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { ApiException } from '../SequraPayments/SequraPaymentsErrors';
 
 const CreditCalls = {
   async getCreditAgreement(totalWithTax) {
@@ -8,7 +9,7 @@ const CreditCalls = {
       const response = await axios.get(url, { params });
       return response.data;
     } catch (error) {
-      return error;
+      return new ApiException(error.message);
     }
   },
 };

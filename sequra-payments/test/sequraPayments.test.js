@@ -1,7 +1,10 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-undef */
 import { expect, use, assert } from 'chai';
+import { JSDOM } from 'jsdom';
+
 import SequraPayments from '../src/SequraPayments';
+import SequraPaymentsModal from '../src/SequraPayments/SequraPaymentsModal';
 import merchantMockDom from './merchantMockDom';
 
 // Use chai dom
@@ -38,5 +41,34 @@ describe('Sequra payments addon test:', () => {
   });
   it('Should ProductPrice is a equal to 399,99', () => {
     expect(customSequraPayments.productPrice).to.equal(399.99);
+  });
+});
+
+describe('Sequra payments modal test:', () => {
+  const modalStyle = `
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            left: 50%;
+            width: 400px;
+            padding: 20px;
+            background: white;
+            z-index: 999999;
+        `;
+  const sequraModal = new JSDOM(SequraPaymentsModal(modalStyle, 399.99));
+  const sequraModalDom = sequraModal.window.document;
+  const sequraFirstDiv = sequraModalDom.querySelector('div');
+  const instalmentTotal = sequraModalDom.querySelector('#instalmentTotal');
+  it('Should Sequra Patment Modal have lenght', () => {
+    expect(sequraFirstDiv.innerHTML.length).to.be.gt(0);
+  });
+  it('Should Sequra Patment Modal recieve position: absolute style', () => {
+    expect(sequraFirstDiv.style.position).to.equal('absolute');
+  });
+  it('Should Sequra Patment Modal instalmentTotal exists', () => {
+    assert.isDefined(instalmentTotal.dataset.instalment);
+  });
+  it('Should Sequra Patment Modal instalmentTotal is equal to 399.99', () => {
+    expect(instalmentTotal.dataset.instalment).to.equal('399.99');
   });
 });

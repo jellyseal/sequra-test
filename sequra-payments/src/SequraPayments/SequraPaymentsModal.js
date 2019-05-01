@@ -12,7 +12,7 @@ const SequraPaymentsModal = (modalStyle, instalmentTotal) => `
         </ol>
     </div>
     <p>¡Así de simple!</p>
-    <p>Además, en el importe mostrado ya se incluye la cuota única mensual de ${instalmentTotal}/mes, por lo que no tendrás ninguna sorpresa</p>
+    <p id="instalmentTotal" data-instalment="${instalmentTotal}">Además, en el importe mostrado ya se incluye la cuota única mensual de ${instalmentTotal}/mes, por lo que no tendrás ninguna sorpresa</p>
 </div>
 `;
 

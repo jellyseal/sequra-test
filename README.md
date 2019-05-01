@@ -3,7 +3,7 @@
 
 ## Iniciar el test
 
-Para inciar el test debéis clonar la rama feature/sequra-payments del repo https://github.com/jellyseal/sequra-test.git
+Para inciar el test debéis clonar el repo https://github.com/jellyseal/sequra-test.git
 
 Luego:
 ```js

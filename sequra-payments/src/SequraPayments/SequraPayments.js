@@ -1,4 +1,5 @@
 import CreditCalls from '../calls/creditCalls';
+import EventsCall from '../calls/eventCalls';
 import SequraPaymentsModal from './SequraPaymentsModal';
 import { DOMException, ApiException } from './SequraPaymentsErrors';
 
@@ -78,11 +79,22 @@ function SequraPayments({
         instalment_count,
         cost_of_credit: { string },
       }) => {
-        const option = addonScope.createElement('OPTION');
         // eslint-disable-next-line camelcase
-        option.innerHTML = `${instalment_count} cuotas de ${string}/mes`;
+        const instalmentCount = instalment_count;
+        const option = addonScope.createElement('OPTION');
+        option.innerHTML = `${instalmentCount} cuotas de ${string}/mes`;
+        option.value = instalmentCount;
         sequraSelect.appendChild(option);
       });
+      // Listen and send select events
+      sequraSelect.addEventListener('change', (event) => {
+        EventsCall.sendEvent({
+          context: 'checkoutWidget',
+          type: 'simulatorInstalmentChanged',
+          selectedInstalment: event.target.value,
+        });
+      });
+      // Listen moreInfo click and open modal
       const moreInfoButton = modifiedContainer.children[0].children[0].children[1];
       moreInfoButton.addEventListener('click', () => {
         openMoreInfoModal(agreements, sequraSelect);

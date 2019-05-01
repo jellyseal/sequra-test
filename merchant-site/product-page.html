@@ -11,8 +11,6 @@
   <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
   <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="main.js"></script>
-  <script>var exports = {}; var require = {};</script>
-  <script type="text/javascript" src="../sequra-component/umd/sequra-test.js"></script>
 </head>
 
 <body>
@@ -68,11 +66,11 @@
             </div>
           </div>
         </div>
-
         <!-- Botones de compra -->
         <div class="section" style="padding-bottom:20px;">
           <button class="btn btn-success">
             <span style="margin-right:20px" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Agregar al carro</button>
+            <div id="myCustomHtmlDiv"></div>
           <h6>
             <a href="#">
               <span class="glyphicon glyphicon-heart-empty" style="cursor:pointer;"></span> Agregar a lista de deseos</a>
@@ -124,5 +122,15 @@
     </div>
   </div>
 </body>
-
+<script type="text/javascript" src="../sequra-payments/build/main.js"></script>
+<script>
+  // Instance and run sequra Payments library
+  const customSequraPayments = new SequraPayments.default({
+    addonScope: document,
+    container: '.container',
+    priceId: '#product-price',
+    sequraAddonContainer: '#myCustomHtmlDiv',
+  });
+  customSequraPayments.run();
+</script>
 </html>

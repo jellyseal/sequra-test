@@ -1,31 +1,42 @@
-# Frontend coding challenge
 
-This is the coding challenge for people who applied to a frontend developer position at SeQura. It's been designed to be a simplified version of the same problems we deal with.
+  
 
-## The challenge
+## Iniciar el test
 
-SeQura provides e-commerce shops (merchants) a flexible payment method so their customers (shoppers) can purchase the goods paying in instalments. SeQura has analyzed, that this kind of payment method requires a biggest effort in promotion by part of the merchant to make a difference in purchases quantity and average amount.
+Para inciar el test debéis clonar la rama feature/sequra-payments del repo https://github.com/jellyseal/sequra-test.git
 
-The marketing team is now asking you to make a prototype of a widget that displays the financing cost for a given product for merchant's product page. They also ask you that they would want to know any shopper interaction with the widget to analyze if the widget has any impact.
+Luego:
+```js
+cd sequra-payments
+yarn install
+yarn build o yarn build-dev
+```
+Y por supuesto, arrancar vuestra API.
 
-We expect you to:
+## Comentarios generales
+¡Hola! Primero de todo agradecer esta oportunidad. La verdad es que ha supuesto un buen reto para mí, especialmente a nivel de arquitectura (véase más adelante).
+He tardado más de tres horas (especialmente por problemas con la exportación de webpack), y me he dejado cosas en el tintero que os comentaré en la sección "Que hubiera hecho de tener más tiempo".
 
-* Create the prototype for the mockups that the marketing team has given you (`mockups.pdf`)
-  * Integrate the prototype with SeQura `CreditAgreementAPI` (`docs/credit_agreement_api.md`) to fetch financing information for a given product value.
-  * Integrate the prototype with SeQura `EventsAPI` (`docs/events_api.md`) triggering an event for each shopper interaction.
-* Integrate the prototype in the merchant sample site (`merchant-site/product-page.html`) so that every time the product price changes the financing value is updated.
-* Write up a paragraph with the way you would distribute this prototype to all our merchants.
+## Arquitectura y otros comentarios
 
-## Instructions
 
-* Please read carefully the challenge and if you have any doubt or need extra info please don't hesitate to ask us before starting.
-* You shouldn't spend more than 3h on the challenge.
-* You should consider this code ready for production as it were a PR to be reviewed by a colleague. Also commit as if it were a real assignment.
-* Design, test, develop and document the code. It should be a performant, clean and well structured solution. **Then send us a link or a zip with a git repo**.
-* Remember you're dealing with resources that will be loaded on merchant's sites, so you should be careful with dependencies, styles and code clashing.
-* Create a README explaining how to setup and run your solution and a short explanation of your technical choices, tradeoffs, ...
-* You don't need to finish. We value quality over feature-completeness. If you have to leave things aside you can mention them on the README explaining why and how you would resolve them.
-* You can code the solution in a language or framework of your choice.
-* In order to use SeQura mocked APIs you need to start the environment found in folder `api`
+Una de las mayores dificultades que he encontrado al realizar este test ha sido a nivel de arquitectura. He dudado bastante sobre cómo plantear el componente, seguramente debido a que estoy a trabajar para un cliente único, y no a pensar en programar un módulo universal.
 
-**HAPPY CODING!!**
+A este componente le he llamado "sequra-payments".  Me he decidido a escribir un módulo en javascript vanilla ES6 por lo siguiente:
+
+* Desconozco el ecosistema de Sequra al 100%, y no sé si los pros/contras de escribirlo en React merecían la pena. Contras de estribirlo en React eran que el cliente debía incorporar la libreria UMD en sus scripts del header, lo que no sé si están dispuestos, ya que al final es hacer una llamada extra a un recurso externo. Como beneficio, veía que se podía incorporar/aprovechar de vuestro explorador de componentes y a un stack tecnológico unificado.
+* He preferido **realizar el módulo en ES6** y no en ES5 por temas de comodidad de desarrollo y porque supongo que casi todos vuestros componentes están escritos así.
+* He usado Webpack para transpilar este código y formar un UMD. Esto hace que se pueda incorporar al cliente **vía tag script en el HTML o bien importándolo también con Webpack o Require**.
+* Veréis que el código **está bastante dividido en archivos distintos**. Por ejemplo, hay un archivo por cada llamada a la API, aunque en este caso no era necesario. En general, he querido reflejar que la aplicación podía crecer, por ejemplo, si hubiesen más de una llamada en CreditCalls, iría en ese archivo.
+* Los import/exports de los index.js, por ejemplo en /src/SecuraPayments, van en ésta línea de dejar una puerta abierta a que el módulo crezca (podría darse el caso que SecuraPayments tiene más de una funcionalidad exportable). En general se considera una buena práctica y espero que no lo veáis como sobreingenieria.
+* Para **evitar la colisión de estilos** he optado por meter estilos inline. Soy consciente de las limitaciones de esto, pero no he tenido tiempo como para montar una arquitectura de transpilación de estilos decente.
+* He optado por usar **async/await** en GET de credit_agreements, ya que no creo que el cliente quiera que le aparezcan las opciones "de repente". Otra cosa sería que llamara a la librería SequraPayments de manera asíncrona. No ha sido así con la llamada a los eventos.
+* Veréis que el código no está especialmente documentado. Intento ser muy semántico en la declaración de variables y funciones, por lo que creo que es suficientemente legible. No es que tenga una postura muy fuerte respecto al tema, pero creo que los comentarios deben estar muy justificados.
+
+## Que hubiera hecho de tener más tiempo
+
+* **Más y mejor testing**. Sé que es un  poco limitado, y no he hecho exactamente TDD. Esto en parte ha sido debido por el agobio del tiempo y a que iba teniendo problemas al exportar la librería con webpack. Supongo que con una arquitectura previamente asentada lo hubiese hecho mejor.
+* **Blindar la colisión de estilos**. Estuve a punto de poner CSS Modules o alguna alternativa similar, pero se me comía el tiempo en cuanto al montaje de la arquitectura.
+* **Parametrizar los estilos**. Un poco debido al punto anterior, quise que hubiese algunos estilos customizables por el cliente (pensé, por ejemplo, en el z-index de la modal).
+* No he podido terminar que se actualizaran los instalmentTotal al cambiar el precio.
+* En general le daría una vuelta al módulo en si, soy consciente que hay margen para el refactor.
